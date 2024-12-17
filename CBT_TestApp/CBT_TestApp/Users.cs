@@ -18,7 +18,7 @@ namespace CBT_TestApp
         Random randQuest = new Random();
         int[] questArray = new int[21];
         int count = 0;
-        Thread threadA;
+     
 
 
 
@@ -91,6 +91,7 @@ namespace CBT_TestApp
             PressEnterToContinue();
             Console.Clear();
             IterateThroughQuest();
+            PrintReusltOfQuiz();
         }
 
 
@@ -122,86 +123,41 @@ namespace CBT_TestApp
 
         }
 
-        public void SetTimer()
-        {
-            string readingTime = "";
-            totalSeconds = duration * 60;
-            for (int i = 120; i > 1; i--)
-            {
-                readingTime = FormatTime(totalSeconds);
-                Console.Write($"Time Remaining: {readingTime}");
-                Thread.Sleep(1000); // Wait for 1 second
-                ClearSpecificLine(1);
-                totalSeconds--;
-            }
-        }
-
-        static void ClearSpecificLine(int line)
-        {
-            // Move the cursor to the specified line and clear it
-            Console.SetCursorPosition(0, line);
-            Console.Write(new string(' ', Console.WindowWidth)); // Overwrite with spaces
-            Console.SetCursorPosition(0, line); // Reset cursor position
-        }
-
-        public void ShowTimer()
-        {
-            Console.WriteLine("Time Remaining: " + FormatTime(totalSeconds));
-        }
+       
+       
         public void IterateThroughQuest()
         {
             
-            while (count != 10)
+            while (count != 20)
             {
-                int questionSelector = randQuest.Next(1, 11);
+                int questionSelector = randQuest.Next(1, 21);
                 if (questArray.Contains(questionSelector))
                 {
                     continue;
                 }
                 else
                 {
-                    var key = Console.ReadKey();
-                    if (key.Key == ConsoleKey.Enter)
-                    {
-                        threadA = new Thread(SetTimer);
-                        threadA.Start();
-                    }
                     questArray[questionSelector] = questionSelector;
                     count += 1;
                     tempQuest = questions.Find(x => x.QuestID == questionSelector);
                     QuestionFormat(tempQuest.QuestID, tempQuest.CbtQuest, tempQuest.OptionA, tempQuest.OptionB, tempQuest.OptionC, tempQuest.OptionD, tempQuest.Answer);
-                    if(totalSeconds < 1)
-                    {
-                        count = 10;
-                        Console.WriteLine("Time is up! Your answers has been submitted.");
-                        PrintReusltOfQuiz();
-                    }
                 }
             }
             
             PrintReusltOfQuiz();
         }
-        string FormatTime(int totalSeconds)
-        {
-            int minutes = totalSeconds / 60;
-            int seconds = totalSeconds % 60;
-            return $"{minutes:D2}:{seconds:D2}";
-        }
+        
         private void PrintReusltOfQuiz()
         {
             user.Remark = $"Thank you {user.FirstName}{user.LastName} for participating in the Quiz, you scored {user.TotalScore} / 20.";
+            Console.WriteLine(user.Remark);
             PressEnterToContinue();
+            Console.Clear();
             AppMenuOne();
         }
 
         private void QuestionFormat(int questNumb, string question, string optionA, string optionB, string optionC, string optionD, string answer)
         {
-            var key = Console.ReadKey();
-            if(key.Key == ConsoleKey.Enter)
-            {
-                threadA = new Thread(SetTimer);
-                threadA.Start();      
-            } 
             Console.WriteLine($"Answered question {count}/20\n");
 
             Console.Write($"{questNumb}. {question}");
